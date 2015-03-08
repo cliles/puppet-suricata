@@ -8,22 +8,35 @@
 #   Explanation of what this parameter affects and what it defaults to.
 #
 class suricata (
-  $package_name = $suricata::params::package_name,
-  $service_name = $suricata::params::service_name,
-  $monitor_interface = $suricata::params::monitor_interface,
+  $package_name       = $suricata::params::package_name,
+  $service_name       = $suricata::params::service_name,
+  $monitor_interface  = $suricata::params::monitor_interface,
+  $netdev_max_backlog = $suricata::params::netdev_max_backlog,
+  $rmem_max           = $suricata::params::rmem_max,
+  $rmem_default       = $suricata::params::rmem_default ,
+  $optmem_max         = $suricata::params::optmem_max
 ) inherits suricata::params {
 
-  include apt
+  if $::osfamily == 'Debian' { include apt }
 
   # validate parameters here
-  if $suricata::monitor_interface in $::interfaces {
-    class { 'suricata::prepare': } ->
-    class { 'suricata::install': } ->
-    class { 'suricata::config': } ~>
-    class { 'suricata::service': } ->
-    Class['suricata']
-  } else {
-    notice "${monitor_interface} not present"
-    notice "Available interfaces: ${::interfaces}"
+  Class['suricata::prepare'] -> Class['suricata::install'] -> Class['suricata::config'] ~> Class['suricata::service']
+
+  class { 'suricata::prepare':
+    monitor_interface  => $monitor_interface,
+    netdev_max_backlog => $netdev_max_backlog,
+    rmem_max           => $rmem_max,
+    rmem_default       => $rmem_default,
+    optmem_max         => $optmem_max,
   }
+
+  class { 'suricata::install':
+    pkgname  => $$package_name,
+  }
+
+  contain 'suricata::prepare'
+  contain 'suricata::install'
+  contain 'suricata::config'
+  contain 'suricata::service'
+
 }

@@ -1,10 +1,28 @@
 # == Class suricata::install
 #
-class suricata::install {
+class suricata::install(
+  $pkgname
+)
+{
 
-  apt::ppa{ 'ppa:oisf/suricata-stable': } ~>
+  if $::osfamily == 'Debian' {
+    apt::ppa { 'ppa:oisf/suricata-stable': }
+    $reqs = Apt::Ppa['ppa:oisf/suricata-stable']
 
-  package { $suricata::package_name:
-    ensure => present,
   }
+  else {
+    yumrepo { 'suricata':
+      ensure   => present,
+      baseurl  => 'http://codemonkey.net/files/rpm/suricata/el7',
+      enabled  => true,
+      gpgcheck => false,
+    }
+    $reqs = Yumrepo['suricata']
+  }
+
+  package { $pkgname:
+    ensure  => present,
+    require => $reqs 
+  }
+
 }

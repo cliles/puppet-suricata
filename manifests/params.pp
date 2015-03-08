@@ -14,9 +14,28 @@ class suricata::params {
       $package_name = 'suricata'
       $service_name = 'suricata'
       $monitor_interface = 'eth1'
+      $compile_pkgs = [
+        'gcc',
+        'libpcap-devel',
+        'pcre-devel',
+        'libyaml-devel',
+        'file-devel', 
+        'zlib-devel',
+        'jansson-devel',
+        'nss-devel',
+        'libcap-ng-devel',
+        'libnet-devel',
+        'libnetfilter_queue-devel',
+      ]
     }
     default: {
       fail("${::operatingsystem} not supported")
     }
   }
+
+  $netdev_max_backlog = 250000
+  $rmem_max           = 16777216
+  $rmem_default       = 16777216
+  $optmem_max         = 16777216
+
 }
