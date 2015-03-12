@@ -2,7 +2,6 @@
 #
 class suricata::prepare (
   $monitor_interface,
-  $compile_pkgs,
   $netdev_max_backlog,
   $rmem_max,
   $rmem_default,
@@ -46,12 +45,6 @@ class suricata::prepare (
   exec { 'set_promisc':
     command => "/sbin/ifconfig ${monitor_interface} promisc",
     unless  => "/sbin/ifconfig ${monitor_interface} | grep 'PROMISC'"
-  }
-
-  if $::osfamily == 'RedHat' {
-    package { $compile_pkgs:
-      ensure => installed,
-    }
   }
 
   sysctl { 'net.core.netdev_max_backlog':
