@@ -31,7 +31,7 @@ class suricata (
   }
 
   class { 'suricata::install':
-    pkgname  => $$package_name,
+    pkgname  => $package_name,
   }
 
   contain 'suricata::prepare'
