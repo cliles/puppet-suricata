@@ -15,7 +15,7 @@ class suricata::install(
       ensure   => present,
       baseurl  => 'http://codemonkey.net/files/rpm/suricata/el7',
       enabled  => true,
-      gpgcheck => false,
+      gpgcheck => 0,
     }
     $reqs = Yumrepo['suricata']
   }
