@@ -37,10 +37,10 @@ class suricata::prepare (
     unless  => "/sbin/ethtool -k ${monitor_interface} | grep 'tcp-segmentation-offload: off'"
   }
 
-  exec { 'disable_rx':
-    command => "/sbin/ethtool -K ${monitor_interface} rx off",
-    unless  => "/sbin/ethtool -k ${monitor_interface} | grep 'rx-checksumming: off'"
-  }
+  #exec { 'disable_rx':
+  #  command => "/sbin/ethtool -K ${monitor_interface} rx off",
+  #  unless  => "/sbin/ethtool -k ${monitor_interface} | grep 'rx-checksumming: off'"
+  #}
 
   exec { 'set_promisc':
     command => "/sbin/ifconfig ${monitor_interface} promisc",
